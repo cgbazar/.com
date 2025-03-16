@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charigram Gold Market</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+        h1 {
+            color: #333;
+            font-size: 1.8em;
+        }
+        iframe {
+            width: 100%;
+            min-height: 400px;
+            height: 80vh;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: #fff;
+        }
+        hr {
+            margin: 20px 0;
+            border: 1px solid #ddd;
+        }
+        .nav-buttons {
+            margin-bottom: 20px;
+        }
+        .nav-buttons button {
+            background-color: blue;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+        }
+        .nav-buttons button:hover {
+            background-color: darkblue;
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            iframe {
+                min-height: 300px;
+                height: 70vh;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Charigram Gold Market</h1>
+    
+    <div class="nav-buttons">
+        <button onclick="showHome()">Live Gold Price</button>
+        <button onclick="showMarketPrice()">Market Price</button>
+        <button onclick="showCalculator()">Calculator</button>
+    </div>
+
+    <iframe id="contentFrame" src="page2.html" title="Page Content"></iframe>
+
+    <script>
+        function showHome() {
+            document.getElementById('contentFrame').src = 'page2.html';
+        }
+
+        function showMarketPrice() {
+            document.getElementById('contentFrame').src = 'page1.html';
+        }
+
+        function showCalculator() {
+            document.getElementById('contentFrame').src = 'page3.html';
+        }
+    </script>
+
+</body>
+</html>
