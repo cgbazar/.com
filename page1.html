@@ -1,161 +1,166 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Gold Price & Market Rates</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; background-color: #f8f9fa; }
-        h1, h2 { color: #333; }
-        .table-container { width: 90%; max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 12px; border: 1px solid #ddd; text-align: center; }
-        th { background-color: #ffcc00; color: #333; }
-        tr:nth-child(even) { background-color: #f2f2f2; }
-        .highlight { background-color: #ffeb99; font-weight: bold; } /* হলুদ ব্যাকগ্রাউন্ড */
-        .price { color: green; font-weight: bold; } /* সবুজ রঙ */
-        .positive { color: green; }
-        .negative { color: red; }
-        #timestamp { margin-top: 10px; font-size: 14px; color: #666; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Gold Price & Market Rates</title>
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      text-align: center; 
+      background-color: #f8f9fa; 
+    }
+    h1 { 
+      color: #333; 
+    }
+    .table-container { 
+      width: 90%; 
+      max-width: 600px; 
+      margin: auto; 
+      background: #fff; 
+      padding: 20px; 
+      border-radius: 10px; 
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+      margin-bottom: 20px; 
+    }
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin-top: 10px; 
+    }
+    th { 
+      background-color: gold; 
+      padding: 12px; 
+      border: 1px solid #ddd; 
+      color: black; 
+      font-weight: bold; 
+    }
+    td { 
+      padding: 12px; 
+      border: 1px solid #ddd; 
+      text-align: center; 
+    }
+    tr:nth-child(even) { 
+      background-color: #f2f2f2; 
+    }
+    .highlight { 
+      background-color: gold !important; 
+      font-weight: bold; 
+    }
+    .price { 
+      color: green; 
+      font-weight: bold; 
+    }
+    .timestamp { 
+      margin-top: 10px; 
+      font-size: 14px; 
+      color: #666; 
+    }
+  </style>
 </head>
 <body>
-
-    <h1>Live Gold Price (USD)</h1>
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Price (USD)</th>
-                    <th>Change</th>
-                </tr>
-            </thead>
-            <tbody id="goldTable">
-                <tr><td colspan="3">Loading...</td></tr>
-            </tbody>
-        </table>
-        <p id="timestamp"></p>
-    </div>
-
-    <h2>চারিগ্রাম জুয়েলারী বাজার দর</h2>
-    <div class="table-container">
-        <table id="marketTable">
-            <thead>
-                <tr>
-                    <th>Category</th>
-                    <th>Description</th>
-                    <th>Price</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td colspan="3">Loading...</td></tr>
-            </tbody>
-        </table>
-    </div>
-
-    <script>
-        async function fetchGoldPrice() {
-            const apiKey = "goldapi-6rmfrsm8betov5-io";
-            const url = "https://www.goldapi.io/api/XAU/USD";
-
-            try {
-                const response = await fetch(url, {
-                    headers: {
-                        "x-access-token": apiKey,
-                        "Content-Type": "application/json"
-                    }
-                });
-                const data = await response.json();
-
-                const changePerGram = (data.price_gram_24k / data.prev_close_price) * data.ch;
-                const changePerVori = changePerGram * 11.66;
-                const changePerKilo = changePerGram * 1000;
-
-                function formatChange(change) {
-                    const sign = change > 0 ? "+" : "";
-                    return `<span class="${change > 0 ? 'positive' : 'negative'}">${sign}${change.toFixed(2)}</span>`;
-                }
-
-                document.getElementById("goldTable").innerHTML = `
-                    <tr>
-                        <td>Gold Price per Ounce</td>
-                        <td class="price">$${data.price.toFixed(2)}</td>
-                        <td>${formatChange(data.ch)}</td>
-                    </tr>
-                    <tr>
-                        <td>Gold Price per Gram</td>
-                        <td class="price">$${data.price_gram_24k.toFixed(2)}</td>
-                        <td>${formatChange(changePerGram)}</td>
-                    </tr>
-                    <tr>
-                        <td>Gold Price per Vori</td>
-                        <td class="price">$${(data.price_gram_24k * 11.66).toFixed(2)}</td>
-                        <td>${formatChange(changePerVori)}</td>
-                    </tr>
-                    <tr>
-                        <td>Gold Price per Kilo</td>
-                        <td class="price">$${(data.price * 32.1507).toFixed(2)}</td>
-                        <td>${formatChange(changePerKilo)}</td>
-                    </tr>
-                `;
-
-                document.getElementById("timestamp").innerText = `Last Updated: ${new Date(data.timestamp * 1000).toLocaleString()}`;
-            } catch (error) {
-                console.error("Error fetching gold price:", error);
+  <h1> চারিগ্রাম ও ঢাকার স্বর্ণের বাজার দর </h1>
+  
+  <div class="table-container">
+    <h2>চারিগ্রাম জুয়েলারী বাজার দর</h2>
+    <p id="timestamp1" class="timestamp">Loading...</p>
+    <table id="marketTable1">
+      <thead>
+        <tr>
+          <th>স্বর্ণ</th>
+          <th>বিবরণ</th>
+          <th>মূল্য</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="3">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="table-container">
+    <h2>ঢাকার স্বর্ণের বাজার দর</h2>
+    <p id="timestamp2" class="timestamp">Loading...</p>
+    <table id="marketTable2">
+      <thead>
+        <tr>
+          <th>স্বর্ণ</th>
+          <th>বিবরণ</th>
+          <th>মূল্য</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="3">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <script>
+    async function fetchMarketRates(sheetUrl, tableId, timestampId, highlightCategory) {
+      try {
+        const response = await fetch(sheetUrl);
+        const csvText = await response.text();
+        // CSV ডেটা comma (,) দ্বারা বিভক্ত ধরা হয়েছে
+        const rows = csvText.split("\n").map(row => row.split(","));
+        let tableBody = "";
+        let lastUpdated = "Not Available";
+        
+        // নির্দিষ্ট হাইলাইটের জন্য array:
+        // Sheet1: যদি প্রথম কলামের মান "স্বর্ণ", "পুরাতন স্বর্ণ", "রুপা" হয়
+        // Sheet2: যদি প্রথম কলামের মান "স্বর্ণ", "পুরাতন স্বর্ণ" হয়
+        const highlightRowsSheet1 = ["স্বর্ণ", "পুরাতন স্বর্ণ", "রুপা"];
+        const highlightRowsSheet2 = ["স্বর্ণ", "পুরাতন স্বর্ণ"];
+  
+        for (let i = 0; i < rows.length; i++) {
+          // "Last Updated" বা "শেষ আপডেট" রো চেক করা
+          if (rows[i][0].includes("Last Updated") || rows[i][0].includes("শেষ আপডেট")) {
+            lastUpdated = rows[i][0]
+              .replace("Last Updated:", "")
+              .replace("শেষ আপডেট:", "")
+              .trim() + " " + (rows[i][1] ? rows[i][1].trim() : "");
+            continue;
+          }
+          if (rows[i].length >= 3) {
+            const category = rows[i][0].trim();
+            let rowClass = "";
+  
+            if (highlightCategory === "sheet1") {
+              if (highlightRowsSheet1.includes(category)) {
+                rowClass = "highlight";
+              }
+            } else if (highlightCategory === "sheet2") {
+              if (highlightRowsSheet2.includes(category)) {
+                rowClass = "highlight";
+              }
             }
+  
+            tableBody += `
+              <tr>
+                <td class="${rowClass}">${rows[i][0]}</td>
+                <td class="${rowClass}">${rows[i][1]}</td>
+                <td class="price ${rowClass}">${rows[i][2]}</td>
+              </tr>
+            `;
+          }
         }
-
-        async function fetchMarketRates() {
-            const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQZHciJ3vmBxMds7ohHyTt8HLHBtjLFanV81BAsFVXRudIdN5Wi3jchbsr12hivpNp3orH8g2VrEN8/pub?output=csv";
-
-            try {
-                const response = await fetch(sheetUrl);
-                const csvText = await response.text();
-
-                const rows = csvText.split("\n").map(row => row.split(","));
-                let tableBody = "";
-
-                for (let i = 1; i < rows.length; i++) {
-                    if (rows[i].length >= 3) {
-                        const category = rows[i][0].trim().toLowerCase();
-                        let rowClass = "";
-
-                        if (
-                            category === "new gold" || 
-                            category === "old gold" || 
-                            category === "silver" || 
-                            category === "dhaka gold" || 
-                            category === "dhaka old gold"
-                        ) {
-                            rowClass = "highlight"; // হলুদ ব্যাকগ্রাউন্ড
-                        }
-
-                        tableBody += `
-                            <tr class="${rowClass}">
-                                <td>${rows[i][0]}</td>
-                                <td>${rows[i][1]}</td>
-                                <td class="price">${rows[i][2]}</td>
-                            </tr>
-                        `;
-                    }
-                }
-
-                document.getElementById("marketTable").innerHTML = tableBody;
-            } catch (error) {
-                console.error("Error fetching market rates:", error);
-            }
-        }
-
-        function updateData() {
-            fetchGoldPrice();
-            fetchMarketRates();
-        }
-
-        updateData();
-        setInterval(updateData, 60000); // প্রতি ১ মিনিট পর আপডেট হবে
-
-    </script>
-
+  
+        document.getElementById(tableId).innerHTML = `<tbody>${tableBody}</tbody>`;
+        document.getElementById(timestampId).innerText = `Last Updated: ${lastUpdated}`;
+      } catch (error) {
+        console.error(`Error fetching data from ${sheetUrl}:`, error);
+      }
+    }
+  
+    function updateData() {
+      const sheetUrl1 = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQZHciJ3vmBxMds7ohHyTt8HLHBtjLFanV81BAsFVXRudIdN5Wi3jchbsr12hivpNp3orH8g2VrEN8/pub?output=csv";
+      const sheetUrl2 = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Hfu0rcCERzmLswHMKnXT28qdzWVy4J6qcC5sJxYwogl6-orBgDlQwmX-xAqnQ6saqLKqdPgqnQDc/pub?output=csv";
+  
+      fetchMarketRates(sheetUrl1, "marketTable1", "timestamp1", "sheet1");
+      fetchMarketRates(sheetUrl2, "marketTable2", "timestamp2", "sheet2");
+    }
+  
+    updateData();
+    setInterval(updateData, 60000);
+  </script>
 </body>
 </html>
