@@ -47,7 +47,7 @@
         }
         .positive { color: green; }
         .negative { color: red; }
-        #timestamp {
+        #timestamp, #timestampBDT {
             margin-top: 10px;
             font-size: 14px;
             color: #666;
@@ -91,49 +91,58 @@
 
     <script>
         async function fetchGoldPrice() {
-            const apiKey = "goldapi-4nn3sm8bwd329-io";
-            const url = "https://www.goldapi.io/api/XAU/USD";
+            const apiKey = "goldapi-4nn3sm8bwd329-io"; // Replace with valid API key
+            const goldUrl = "https://www.goldapi.io/api/XAU/USD";
             const exchangeRateUrl = "https://api.exchangerate-api.com/v4/latest/USD";
 
             try {
-                const response = await fetch(url, {
+                // Fetch gold price in USD
+                const goldResponse = await fetch(goldUrl, {
                     headers: {
                         "x-access-token": apiKey,
                         "Content-Type": "application/json"
                     }
                 });
-                const data = await response.json();
-                
+                if (!goldResponse.ok) throw new Error("Gold API failed!");
+
+                const goldData = await goldResponse.json();
+
+                // Fetch exchange rate for BDT conversion
                 const exchangeResponse = await fetch(exchangeRateUrl);
+                if (!exchangeResponse.ok) throw new Error("Exchange rate API failed!");
+
                 const exchangeData = await exchangeResponse.json();
-                const usdToBdt = exchangeData.rates.BDT;
-                
+                const usdToBdt = exchangeData.rates.BDT || 110; // Default fallback exchange rate
+
                 function formatChange(change) {
+                    if (isNaN(change)) return `<span class="negative">N/A</span>`;
                     const sign = change > 0 ? "+" : "";
                     return `<span class="${change > 0 ? 'positive' : 'negative'}">${sign}${change.toFixed(2)}</span>`;
                 }
-                
+
+                if (!goldData.price || !goldData.price_gram_24k) throw new Error("Invalid gold data!");
+
                 const goldTable = document.getElementById("goldTable");
                 goldTable.innerHTML = `
                     <tr>
                         <td>Gold Price per Ounce</td>
-                        <td class="highlight">$${data.price.toFixed(2)}</td>
-                        <td>${formatChange(data.ch)}</td>
+                        <td class="highlight">$${goldData.price.toFixed(2)}</td>
+                        <td>${formatChange(goldData.ch)}</td>
                     </tr>
                     <tr>
                         <td>Gold Price per Gram</td>
-                        <td>$${data.price_gram_24k.toFixed(2)}</td>
-                        <td>${formatChange(data.ch)}</td>
+                        <td>$${goldData.price_gram_24k.toFixed(2)}</td>
+                        <td>${formatChange((goldData.ch / goldData.price) * goldData.price_gram_24k)}</td>
                     </tr>
                     <tr>
                         <td>Gold Price per Vori</td>
-                        <td>$${(data.price_gram_24k * 11.66).toFixed(2)}</td>
-                        <td>${formatChange(data.ch)}</td>
+                        <td>$${(goldData.price_gram_24k * 11.66).toFixed(2)}</td>
+                        <td>${formatChange((goldData.ch / goldData.price) * (goldData.price_gram_24k * 11.66))}</td>
                     </tr>
                     <tr>
                         <td>Gold Price per Kilo</td>
-                        <td>$${(data.price * 32.1507).toFixed(2)}</td>
-                        <td>${formatChange(data.ch)}</td>
+                        <td>$${(goldData.price * 32.1507).toFixed(2)}</td>
+                        <td>${formatChange((goldData.ch / goldData.price) * (goldData.price * 32.1507))}</td>
                     </tr>
                 `;
 
@@ -141,31 +150,29 @@
                 goldTableBDT.innerHTML = `
                     <tr>
                         <td>Gold Price per Ounce</td>
-                        <td class="highlight">৳${(data.price * usdToBdt).toFixed(2)}</td>
-                        <td>${formatChange(data.ch * usdToBdt)}</td>
+                        <td class="highlight">৳${(goldData.price * usdToBdt).toFixed(2)}</td>
+                        <td>${formatChange(goldData.ch * usdToBdt)}</td>
                     </tr>
                     <tr>
                         <td>Gold Price per Gram</td>
-                        <td>৳${(data.price_gram_24k * usdToBdt).toFixed(2)}</td>
-                        <td>${formatChange(data.ch * usdToBdt)}</td>
+                        <td>৳${(goldData.price_gram_24k * usdToBdt).toFixed(2)}</td>
+                        <td>${formatChange((goldData.ch / goldData.price) * goldData.price_gram_24k * usdToBdt)}</td>
                     </tr>
                     <tr>
                         <td>Gold Price per Vori</td>
-                        <td>৳${(data.price_gram_24k * 11.66 * usdToBdt).toFixed(2)}</td>
-                        <td>${formatChange(data.ch * usdToBdt)}</td>
+                        <td>৳${(goldData.price_gram_24k * 11.66 * usdToBdt).toFixed(2)}</td>
+                        <td>${formatChange((goldData.ch / goldData.price) * (goldData.price_gram_24k * 11.66) * usdToBdt)}</td>
                     </tr>
                     <tr>
                         <td>Gold Price per Kilo</td>
-                        <td>৳${(data.price * 32.1507 * usdToBdt).toFixed(2)}</td>
-                        <td>${formatChange(data.ch * usdToBdt)}</td>
+                        <td>৳${(goldData.price * 32.1507 * usdToBdt).toFixed(2)}</td>
+                        <td>${formatChange((goldData.ch / goldData.price) * (goldData.price * 32.1507) * usdToBdt)}</td>
                     </tr>
                 `;
 
-                document.getElementById("timestamp").innerText = `Last Updated: ${new Date(data.timestamp * 1000).toLocaleString()}`;
-                document.getElementById("timestampBDT").innerText = `Last Updated: ${new Date(data.timestamp * 1000).toLocaleString()}`;
+                document.getElementById("timestamp").innerText = `Last Updated: ${new Date(goldData.timestamp * 1000).toLocaleString()}`;
+                document.getElementById("timestampBDT").innerText = `Last Updated: ${new Date(goldData.timestamp * 1000).toLocaleString()}`;
             } catch (error) {
-                document.getElementById("goldTable").innerHTML = "<tr><td colspan='3'>Failed to load data</td></tr>";
-                document.getElementById("goldTableBDT").innerHTML = "<tr><td colspan='3'>Failed to load data</td></tr>";
                 console.error("Error fetching gold price:", error);
             }
         }
