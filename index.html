@@ -1,116 +1,780 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>সার্ভার ও অ্যাপ আপডেট নোটিশ</title>
+    <title>PhotoPerfect AI - Image Denoising Tool</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
     <style>
         body {
-            font-family: "Kalpurush", Arial, sans-serif;
-            line-height: 1.8;
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #f5f6fa;
+            font-family: 'Inter', sans-serif;
+            color: #333;
+            overflow-x: hidden;
         }
-
-        .header {
-            text-align: center;
-            padding: 25px;
-            background: #2c3e50;
-            color: white;
-            border-radius: 15px;
-            margin-bottom: 25px;
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
         }
-
-        .update-box {
+        
+        .card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .compare-slider {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .compare-slider .img-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .compare-slider .img-container.before {
+            clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+        }
+        
+        .compare-slider .slider-handle {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 4px;
+            height: 100%;
             background: white;
-            padding: 25px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transform: translateX(-50%);
+            cursor: col-resize;
+            z-index: 20;
         }
-
-        .drive-link {
-            color: #e74c3c;
-            word-break: break-all;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 5px;
-            margin: 10px 0;
+        
+        .slider-handle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
-
-        .warning {
-            border-left: 4px solid #e74c3c;
-            padding: 15px;
-            background: #fff3f3;
-            margin: 15px 0;
+        
+        .slider-handle::before {
+            content: '⟷';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #333;
+            font-size: 16px;
+            z-index: 21;
         }
-
-        .button {
-            display: inline-block;
-            padding: 12px 25px;
-            margin: 10px 0;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: 0.3s;
+        
+        .upload-area {
+            border: 3px dashed #ccc;
+            transition: all 0.3s ease;
         }
-
-        .website-btn {
-            background: #3498db;
-            color: white;
+        
+        .upload-area:hover {
+            border-color: #3a7bd5;
+            background-color: rgba(58, 123, 213, 0.05);
         }
-
-        .drive-btn {
-            background: #2ecc71;
-            color: white;
+        
+        .tab-content {
+            display: none;
         }
-
-        .button:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3a7bd5, #00d2ff);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        
+        .dark-mode {
+            background-color: #1a202c;
+            color: #f7fafc;
         }
     </style>
 </head>
-<body>
-    <div class="header">
-        <h1>🚀 নতুন আপডেট সফলভাবে সম্পন্ন হয়েছে!</h1>
-        <p>সর্বশেষ ভার্সন ব্যবহার করতে নিচের লিংকগুলো দেখুন</p>
-    </div>
-
-    <div class="update-box">
-        <h2>🌐 নতুন ওয়েবসাইট লিংক:</h2>
-        <p>আমাদের সম্পূর্ণ রি-ডিজাইন করা ওয়েবসাইট:</p>
-        <a href="https://www.cgbazar.online" class="button website-btn" target="_blank">ওয়েবসাইট ওপেন করুন</a>
-    </div>
-
-    <div class="update-box">
-        <h2>📲 অ্যাপ ডাউনলোড লিংক:</h2>
-        <p>গুগল ড্রাইভ থেকে APK ফাইল ডাউনলোড করুন:</p>
-        <div class="drive-link">
-            ড্রাইভ লিংক: <a href="YOUR_DRIVE_LINK_HERE" target="_blank">Drive Link</a>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm py-4">
+        <div class="container mx-auto px-6 flex items-center justify-between">
+            <div class="flex items-center">
+                <div class="text-2xl font-bold text-blue-600">PhotoPerfect<span class="text-blue-400">AI</span></div>
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#" class="text-blue-600 font-medium">Home</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">Features</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">Examples</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">Pricing</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <button class="hidden md:block px-4 py-2 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 transition">
+                    <i class="far fa-moon mr-2"></i>Switch Theme
+                </button>
+                <button class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">
+                    Sign In
+                </button>
+                <button class="md:hidden text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
         </div>
-        <a href="https://drive.google.com/file/d/1PC8nmdoR8c73bgP4oE0ksZnep-xQ9dp4/view?usp=drivesdk" class="button drive-btn" target="_blank">ড্রাইভে অ্যাক্সেস করুন</a>
-        
-        <div class="warning">
-            ⚠️ সতর্কতা: ফাইল ডাউনলোড করতে "Download" বাটনে ক্লিক করুন (ড্রাইভ প্রিভিউ মোড এড়িয়ে যান)
+    </header>
+
+    <!-- Hero Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">Transform Noisy Photos Into Crystal Clear Images</h1>
+                    <p class="text-lg text-gray-600 mb-8">Our AI-powered denoising technology removes unwanted noise while preserving important details in your photos.</p>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-1 text-blue-600">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <span class="text-gray-600">4.8 from 215,357 reviews</span>
+                    </div>
+                    <div class="flex flex-wrap items-center mt-4 space-x-6">
+                        <div class="flex items-center">
+                            <i class="fas fa-shield-alt text-green-600 mr-2"></i>
+                            <span class="text-gray-600">Secure Processing</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-bolt text-yellow-500 mr-2"></i>
+                            <span class="text-gray-600">Fast Results</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-lock text-blue-600 mr-2"></i>
+                            <span class="text-gray-600">Privacy Protected</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2 md:pl-10">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="upload-area rounded-lg p-10 text-center cursor-pointer">
+                            <div class="mb-4">
+                                <i class="fas fa-cloud-upload-alt text-blue-500 text-5xl"></i>
+                            </div>
+                            <h3 class="text-xl font-medium mb-2">Drag & Drop Your Image Here</h3>
+                            <p class="text-gray-600 mb-6">or</p>
+                            <button class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">
+                                Browse Files
+                            </button>
+                            <p class="text-sm text-gray-500 mt-4">Supports JPG, PNG, WEBP • Max 10MB</p>
+                        </div>
+                        <div class="mt-6 flex items-center justify-between">
+                            <div class="text-sm text-gray-500">
+                                <span class="font-medium">2,547</span> images processed today
+                            </div>
+                            <a href="#" class="text-sm text-blue-600 hover:underline">Try demo image</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <div class="update-box" style="background: #fff8e1;">
-        <h3>📌 ব্যবহার নির্দেশিকা:</h3>
-        <ol>
-            <li>ড্রাইভ লিংকে ক্লিক করুন</li>
-            <li>ডানপাশের তিন বিন্দু মেনু (⋮) ক্লিক করুন</li>
-            <li>"Download" অপশন সিলেক্ট করুন</li>
-        </ol>
-    </div>
+    <!-- How It Works Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12">How It Works</h2>
+            <div class="flex flex-col md:flex-row justify-between items-start space-y-8 md:space-y-0 md:space-x-8">
+                <div class="flex-1 bg-white rounded-xl shadow-sm p-6 card">
+                    <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-6">
+                        <i class="fas fa-upload text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">1. Upload Image</h3>
+                    <p class="text-gray-600">Simply drag and drop your noisy photo or browse to select one from your device.</p>
+                </div>
+                <div class="flex-1 bg-white rounded-xl shadow-sm p-6 card">
+                    <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-6">
+                        <i class="fas fa-magic text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">2. Auto Processing</h3>
+                    <p class="text-gray-600">Our AI algorithm automatically detects and removes noise from your image.</p>
+                </div>
+                <div class="flex-1 bg-white rounded-xl shadow-sm p-6 card">
+                    <div class="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mb-6">
+                        <i class="fas fa-download text-purple-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">3. Download Result</h3>
+                    <p class="text-gray-600">Download your enhanced, noise-free image in high quality.</p>
+                </div>
+            </div>
+            <div class="mt-12 bg-white rounded-xl shadow-sm p-6">
+                <h3 class="text-xl font-semibold mb-4">Processing Status</h3>
+                <div class="progress-bar mb-2">
+                    <div class="progress-bar-fill" style="width: 0%"></div>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span>Upload</span>
+                    <span>Processing</span>
+                    <span>Download</span>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <div class="update-box">
-        <h3>☎️ যোগাযোগ:</h3>
-        <p>সাপোর্ট: anik3u@gmail.com<br>
-        হেল্পলাইন: 01973249779 (সকাল ৯টা - রাত ১০টা)</p>
-    </div>
+    <!-- Before/After Comparison -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-4">See the Difference</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+                Our AI technology effectively removes noise while preserving important details in your photos.
+                Slide to compare the before and after results.
+            </p>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="rounded-xl overflow-hidden shadow-lg compare-slider h-96 md:h-[500px] relative">
+                    <div class="img-container before">
+                        <div class="absolute top-4 left-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded">Before</div>
+                        <img src="https://images.media.io/images2023/denoise-image/part3-3.png" alt="Noisy image" class="w-full h-full object-cover">
+                    </div>
+                    <div class="img-container after">
+                        <div class="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded">After</div>
+                        <img src="https://images.media.io/images2023/denoise-image/part3-2.png" alt="Denoised image" class="w-full h-full object-cover">
+                    </div>
+                    <div class="slider-handle"></div>
+                </div>
+                <div class="mt-6 text-center">
+                    <p class="text-gray-700 mb-4">Slide to compare before and after</p>
+                    <button class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">
+                        Try It Yourself
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-4">Key Features</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+                Our AI denoising tool offers powerful features to help you achieve professional-quality results.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white rounded-xl shadow-sm p-6 card">
+                    <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center mb-4">
+                        <i class="fas fa-robot text-yellow-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">AI-Powered Denoising</h3>
+                    <p class="text-gray-600">Advanced algorithms automatically identify and remove noise patterns while preserving important details.</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm p-6 card">
+                    <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-4">
+                        <i class="fas fa-mouse-pointer text-green-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">One-Click Operation</h3>
+                    <p class="text-gray-600">No technical skills needed. Simple interface lets you clean up images with just one click.</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm p-6 card">
+                    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
+                        <i class="fas fa-bolt text-blue-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Fast Processing</h3>
+                    <p class="text-gray-600">Get results in seconds thanks to our optimized algorithms and high-performance cloud infrastructure.</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm p-6 card">
+                    <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center mb-4">
+                        <i class="fas fa-globe text-purple-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Web-Based Access</h3>
+                    <p class="text-gray-600">Use from any device with a browser - no downloads or installations required.</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm p-6 card">
+                    <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
+                        <i class="fas fa-sliders-h text-red-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Advanced Settings</h3>
+                    <p class="text-gray-600">Fine-tune denoising parameters for precise control over your results (for advanced users).</p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm p-6 card">
+                    <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mb-4">
+                        <i class="fas fa-lock text-indigo-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Privacy Protected</h3>
+                    <p class="text-gray-600">SSL encryption and automatic file deletion ensure your images remain private and secure.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Tabs -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-4">Perfect for Any Photography Scenario</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+                Our denoising tool helps photographers of all levels achieve professional results across a variety of challenging scenarios.
+            </p>
+            
+            <div class="mb-8 flex justify-center">
+                <div class="flex space-x-2 bg-gray-100 p-1 rounded-lg">
+                    <button class="tab-button px-5 py-2 rounded-lg bg-blue-600 text-white" data-tab="night">Night Photography</button>
+                    <button class="tab-button px-5 py-2 rounded-lg text-gray-700 hover:bg-gray-200" data-tab="wildlife">Wildlife</button>
+                    <button class="tab-button px-5 py-2 rounded-lg text-gray-700 hover:bg-gray-200" data-tab="portrait">Portrait</button>
+                </div>
+            </div>
+            
+            <div class="tab-content active" id="night-content">
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 md:pr-8 mb-6 md:mb-0">
+                        <h3 class="text-2xl font-semibold mb-4">Remove Grain from Night Photography</h3>
+                        <p class="text-gray-600 mb-4">
+                            Capture stunning nightscapes without worrying about noise interference. Our AI denoiser intelligently 
+                            detects and distinguishes between genuine image details and noise, effectively reducing noise in 
+                            low-light images while preserving fine details.
+                        </p>
+                        <ul class="space-y-2">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>Preserves star details in astrophotography</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>Enhances city lights and neon signs</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>Reduces high-ISO noise from long exposures</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="md:w-1/2">
+                        <img src="https://images.media.io/images2023/denoise-image/part3-1.png" alt="Night photography denoising" class="rounded-lg shadow-lg w-full h-auto">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="wildlife-content">
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 md:pr-8 mb-6 md:mb-0">
+                        <h3 class="text-2xl font-semibold mb-4">Remove Noise from Wildlife Photography</h3>
+                        <p class="text-gray-600 mb-4">
+                            Bring your wildlife photos to life with clarity and precision. Our AI-powered denoising technology 
+                            intelligently detects and removes noise from animal shots, enhancing the overall quality and allowing 
+                            you to showcase the beauty of wildlife in every detail.
+                        </p>
+                        <ul class="space-y-2">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>Preserves fur and feather details</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>Enhances distant telephoto shots</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>Improves fast-action photography with high shutter speeds</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="md:w-1/2">
+                        <img src="https://images.media.io/images2023/denoise-image/part3-2.png" alt="Wildlife photography denoising" class="rounded-lg shadow-lg w-full h-auto">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="portrait-content">
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 md:pr-8 mb-6 md:mb-0">
+                        <h3 class="text-2xl font-semibold mb-4">Noise Removal for Flawless Portraits</h3>
+                        <p class="text-gray-600 mb-4">
+                            Create flawless portraits with our advanced AI Denoiser. Eliminate unwanted noise from your portrait images,
+                            resulting in smooth skin tones, sharp features, and professional-grade results without losing important details.
+                        </p>
+                        <ul class="space-y-2">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>Natural skin texture preservation</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>Enhanced eye and facial feature details</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>Improved indoor portrait quality in challenging lighting</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="md:w-1/2">
+                        <img src="https://images.media.io/images2023/denoise-image/part3-3.png" alt="Portrait photography denoising" class="rounded-lg shadow-lg w-full h-auto">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Testimonials -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-4">What Our Users Say</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+                Join thousands of satisfied photographers who have transformed their images with our AI denoising tool.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-xl shadow-sm p-6 card">
+                    <div class="flex items-center space-x-1 text-yellow-400 mb-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-600 mb-6">
+                        "This denoising tool worked like magic! It effortlessly removed the noise from my night photos, 
+                        enhancing the overall quality. Highly recommended for anyone seeking crisp and clear images."
+                    </p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold mr-3">
+                            MF
+                        </div>
+                        <div>
+                            <h4 class="font-medium">Magnus Flynn</h4>
+                            <p class="text-sm text-gray-500">Night Photography Enthusiast</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm p-6 card">
+                    <div class="flex items-center space-x-1 text-yellow-400 mb-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-600 mb-6">
+                        "I was amazed by the results. It transformed my grainy wildlife photos into stunning, noise-free 
+                        masterpieces. The AI technology is truly impressive and preserved all the important details."
+                    </p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold mr-3">
+                            AH
+                        </div>
+                        <div>
+                            <h4 class="font-medium">Aurora Hayes</h4>
+                            <p class="text-sm text-gray-500">Professional Photographer</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm p-6 card">
+                    <div class="flex items-center space-x-1 text-yellow-400 mb-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p class="text-gray-600 mb-6">
+                        "This tool helped me salvage some low-light photos by effectively reducing the noise without 
+                        sacrificing the details. It's now my go-to solution for enhancing all my portrait photography."
+                    </p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold mr-3">
+                            LV
+                        </div>
+                        <div>
+                            <h4 class="font-medium">Leona Vega</h4>
+                            <p class="text-sm text-gray-500">Portrait Photographer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <div class="inline-flex items-center py-2 px-4 bg-blue-50 rounded-full text-blue-600">
+                    <i class="fas fa-users mr-2"></i>
+                    <span>Join over 215,357 satisfied users</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-4">Frequently Asked Questions</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+                Find answers to common questions about our AI denoising tool.
+            </p>
+            
+            <div class="max-w-3xl mx-auto space-y-6">
+                <div class="bg-gray-50 rounded-xl p-6">
+                    <h3 class="text-xl font-semibold mb-2">How do I remove noise from a picture?</h3>
+                    <p class="text-gray-600">
+                        Simply upload your image to our tool and let our advanced AI algorithm automatically detect and reduce 
+                        the noise, resulting in a clean and visually appealing photo. No special knowledge is required.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-6">
+                    <h3 class="text-xl font-semibold mb-2">What does it mean to denoise an image?</h3>
+                    <p class="text-gray-600">
+                        Denoising refers to the process of reducing or eliminating unwanted grain or noise present in an image. 
+                        Our AI denoiser intelligently analyzes and processes the image to enhance its quality by removing noise while preserving details.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-6">
+                    <h3 class="text-xl font-semibold mb-2">How can I reduce the grain of a photo online?</h3>
+                    <p class="text-gray-600">
+                        You can easily reduce grain in your photos online using our Image Denoiser. Simply upload your photo, 
+                        and our AI algorithm will automatically detect and reduce the noise, providing you with a clean and 
+                        professional-looking image directly in your browser.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-6">
+                    <h3 class="text-xl font-semibold mb-2">Is my data secure when using this tool?</h3>
+                    <p class="text-gray-600">
+                        Yes. Your data's safety is our top priority. We use SSL encryption to ensure the security of your uploaded photos. 
+                        Additionally, our image denoiser automatically deletes processed photos within hours, ensuring your privacy.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 gradient-bg text-white">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Transform Your Photos?</h2>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">
+                Get started now and see the difference our AI denoising technology can make to your images.
+            </p>
+            <button class="px-8 py-4 bg-white text-blue-600 rounded-lg hover:bg-gray-100 transition font-medium text-lg shadow-lg">
+                Try For Free Now
+            </button>
+            <p class="mt-4 text-blue-100">No registration required • Process up to 5 images for free</p>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <section class="py-8 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-wrap justify-center items-center text-center gap-x-12 gap-y-6">
+                <div>
+                    <h4 class="text-2xl font-bold text-blue-600">5M+</h4>
+                    <p class="text-gray-600">Images Processed</p>
+                </div>
+                <div>
+                    <h4 class="text-2xl font-bold text-blue-600">215K+</h4>
+                    <p class="text-gray-600">Happy Users</p>
+                </div>
+                <div>
+                    <h4 class="text-2xl font-bold text-blue-600">4.8/5</h4>
+                    <p class="text-gray-600">User Rating</p>
+                </div>
+                <div>
+                    <h4 class="text-2xl font-bold text-blue-600">3 Seconds</h4>
+                    <p class="text-gray-600">Average Processing Time</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 py-12">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between">
+                <div class="mb-8 md:mb-0">
+                    <div class="text-2xl font-bold text-white mb-4">PhotoPerfect<span class="text-blue-400">AI</span></div>
+                    <p class="max-w-xs mb-6">
+                        Advanced AI-powered image denoising technology to help you achieve professional quality results.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-white">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+                    <div>
+                        <h5 class="text-lg font-semibold text-white mb-4">Product</h5>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="hover:text-white">Features</a></li>
+                            <li><a href="#" class="hover:text-white">Pricing</a></li>
+                            <li><a href="#" class="hover:text-white">Examples</a></li>
+                            <li><a href="#" class="hover:text-white">Documentation</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h5 class="text-lg font-semibold text-white mb-4">Support</h5>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="hover:text-white">Help Center</a></li>
+                            <li><a href="#" class="hover:text-white">Tutorial Videos</a></li>
+                            <li><a href="#" class="hover:text-white">Contact Us</a></li>
+                            <li><a href="#" class="hover:text-white">FAQ</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h5 class="text-lg font-semibold text-white mb-4">Legal</h5>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+                            <li><a href="#" class="hover:text-white">Terms of Service</a></li>
+                            <li><a href="#" class="hover:text-white">Cookie Policy</a></li>
+                            <li><a href="#" class="hover:text-white">GDPR Compliance</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p>© 2023 PhotoPerfect AI. All rights reserved.</p>
+                <div class="mt-4 md:mt-0">
+                    <img src="https://images.media.io/images2023/colorize-photos/icon9.svg" alt="Security badge" class="h-10 inline-block mr-4">
+                    <img src="https://images.media.io/images2023/colorize-photos/icon6.svg" alt="Online badge" class="h-10 inline-block">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Before/After Image comparison slider
+        document.addEventListener('DOMContentLoaded', function() {
+            const slider = document.querySelector('.compare-slider');
+            if (!slider) return;
+            
+            const sliderHandle = slider.querySelector('.slider-handle');
+            const beforeContainer = slider.querySelector('.img-container.before');
+            
+            let isDragging = false;
+            
+            function updateSliderPosition(clientX) {
+                const sliderRect = slider.getBoundingClientRect();
+                const newPosition = (clientX - sliderRect.left) / sliderRect.width;
+                const clampedPosition = Math.max(0, Math.min(1, newPosition));
+                const percentPosition = clampedPosition * 100;
+                
+                sliderHandle.style.left = `${percentPosition}%`;
+                beforeContainer.style.clipPath = `polygon(0 0, ${percentPosition}% 0, ${percentPosition}% 100%, 0 100%)`;
+            }
+            
+            slider.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                updateSliderPosition(e.clientX);
+            });
+            
+            window.addEventListener('mouseup', function() {
+                isDragging = false;
+            });
+            
+            window.addEventListener('mousemove', function(e) {
+                if (isDragging) {
+                    updateSliderPosition(e.clientX);
+                }
+            });
+            
+            // Touch events for mobile
+            slider.addEventListener('touchstart', function(e) {
+                isDragging = true;
+                updateSliderPosition(e.touches[0].clientX);
+            });
+            
+            window.addEventListener('touchend', function() {
+                isDragging = false;
+            });
+            
+            window.addEventListener('touchmove', function(e) {
+                if (isDragging) {
+                    updateSliderPosition(e.touches[0].clientX);
+                }
+            });
+            
+            // Progress bar animation for demo purposes
+            setTimeout(function() {
+                const progressBar = document.querySelector('.progress-bar-fill');
+                if (progressBar) {
+                    progressBar.style.width = '33%';
+                    setTimeout(function() {
+                        progressBar.style.width = '66%';
+                        setTimeout(function() {
+                            progressBar.style.width = '100%';
+                        }, 1000);
+                    }, 1000);
+                }
+            }, 1000);
+            
+            // Tab functionality
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.getAttribute('data-tab');
+                    
+                    // Update buttons
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('bg-blue-600', 'text-white');
+                        btn.classList.add('text-gray-700', 'hover:bg-gray-200');
+                    });
+                    button.classList.add('bg-blue-600', 'text-white');
+                    button.classList.remove('text-gray-700', 'hover:bg-gray-200');
+                    
+                    // Update content
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(`${tabId}-content`).classList.add('active');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
